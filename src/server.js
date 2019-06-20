@@ -20,6 +20,9 @@ app.set('superSecret', config.secret);
 app.use(morgan('dev'));
 
 
+const contacts = require('./routes/contacts');
+app.use('/.netlify/functions/server/api/contacts', contacts);
+
 const items = require('./routes/items');
 app.use('/.netlify/functions/server/api/items', items);
 
