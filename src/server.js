@@ -1,7 +1,8 @@
-// const hostname = 'localhost';
+'use strict';
 const port = 8000;
 
 const express = require('express');
+const serverless = require('serverless-http');
 const app = express();
 const bodyParser = require('body-parser'); // middleware, req.body
 const cors = require('cors'); // cross origin resource sharing
@@ -12,11 +13,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/api/contacts', (req, res)=>{
+const router = express.Router();
+
+router.get('/', (req, res)=>{
     res.json(contacts);
 });
 
-app.get('/api/contacts/:id', (req, res)=>{
+router.get('/:id', (req, res)=>{
 
     let id = req.params.id;
 
@@ -31,7 +34,7 @@ app.get('/api/contacts/:id', (req, res)=>{
     res.json(contact);
 });
 
-app.post('/api/contacts', (req, res)=>{
+router.post('/', (req, res)=>{
     let contact = {
         id: contacts.length + 1,
         firstName: req.body.firstName,
@@ -45,7 +48,7 @@ app.post('/api/contacts', (req, res)=>{
     res.json(contact);
 });
 
-app.put('/api/contacts/:id', (req, res)=>{
+router.put('/:id', (req, res)=>{
     let id = req.params.id;
     let contact = contacts.filter(contact => {
         return contact.id == id
@@ -70,7 +73,7 @@ app.put('/api/contacts/:id', (req, res)=>{
     res.json(contacts[index]);
 });
 
-app.delete('/api/contacts/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     let id = req.params.id;
     let contact = contacts.filter(contact => {
         return contact.id == id
@@ -87,4 +90,8 @@ app.delete('/api/contacts/:id', (req, res) => {
     res.json({message: 'User with ' + id + ' was deleted'});
 });
 
-app.listen(port);
+app.use('/.netlify/functions/server', router);
+
+// app.listen(port);
+
+module.exports.handler = serverless(app);
