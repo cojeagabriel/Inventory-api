@@ -6,7 +6,8 @@
   "scripts": {
     "mongod": "mongod",
     "start": "./node_modules/.bin/netlify-lambda serve src",
-    "build": "./node_modules/.bin/netlify-lambda build src"
+    "build": "./node_modules/.bin/netlify-lambda build src",
+    "server": "nodemon"
   },
   "repository": {
     "type": "git",
