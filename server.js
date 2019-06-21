@@ -15,7 +15,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(cors());
 
-mongoose.connect(config.database);
+mongoose.connect(config.database, {
+    useNewUrlParser: true
+});
 app.set('superSecret', config.secret);
 app.use(morgan('dev'));
 

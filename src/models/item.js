@@ -8,6 +8,10 @@ module.exports = mongoose.model('Item', new Schema({
         type: String,
         required: true
     },
+    position: {
+        type: Number,
+        required: true
+    },
     available: {
         type: Boolean,
         required: true

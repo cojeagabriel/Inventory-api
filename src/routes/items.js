@@ -26,19 +26,40 @@ router.get('/:id', (req, res)=>{
 });
 
 router.post('/', (req, res)=>{
-    const newItem = new Item({
-        name: req.body.name,
-        available: false
-    });
 
-    newItem.save((err, item) => {
-        if(err){
-            res.json({message: err.errors})
+    Item.find().sort([['position', 'descending']]).exec(function (err, items) {
+        console.log(items.length);
+        if (err) {
+            res.json({
+                message: err.errors
+            })
         }
         else{
-            res.json(item);
+            let position = 1;
+            if (items.length > 0){
+                position = items[0].position + 1;
+            }
+
+            const newItem = new Item({
+                name: req.body.name,
+                position: position,
+                available: false
+            });
+
+            newItem.save((err, item) => {
+                if (err) {
+                    res.json({
+                        message: err.errors
+                    })
+                } else {
+                    res.json(item);
+                }
+            });
+            
         }
+        
     });
+    
 });
 
 router.put('/:id', (req, res)=>{
@@ -46,6 +67,7 @@ router.put('/:id', (req, res)=>{
         _id: req.params.id
     }, {
         name: req.body.name,
+        position: req.body.position,
         available: req.body.available
     }, (err, item)=>{
         if (err) {
@@ -59,9 +81,10 @@ router.put('/:id', (req, res)=>{
 });
 
 router.delete('/:id', (req, res)=>{
+
     Item.remove({
         _id: req.params.id
-    }, (err)=>{
+    }, (err) => {
         if (err) {
             res.json({
                 message: err.errors
